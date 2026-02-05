@@ -19,7 +19,7 @@ import { selectedPostSlice } from './features/SelectedPost';
 
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.author.user);
-  const posts = useAppSelector(state => state.posts.posts);
+  const posts = useAppSelector(state => state.posts.items);
   const hasError = useAppSelector(state => state.posts.error);
   const loading = useAppSelector(state => state.posts.loading);
   const selectedPost = useAppSelector(state => state.selectedPost);

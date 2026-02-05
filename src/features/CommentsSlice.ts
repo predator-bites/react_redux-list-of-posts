@@ -10,13 +10,13 @@ type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type SimplifiedComment = Optional<Comment, 'id'>;
 
 type CommentsState = {
-  comments: SimplifiedComment[];
+  items: SimplifiedComment[];
   loading: boolean;
   hasError: string;
 };
 
 const initialState: CommentsState = {
-  comments: [],
+  items: [],
   loading: false,
   hasError: '',
 };
@@ -39,7 +39,7 @@ export const commentsSlice = customCreateSlice({
             state.hasError = 'Something went wrong';
           },
           fulfilled: (state, { payload }: PayloadAction<Comment[]>) => {
-            state.comments = payload;
+            state.items = payload;
           },
           settled: state => {
             state.loading = false;
@@ -49,18 +49,25 @@ export const commentsSlice = customCreateSlice({
 
       add: create.reducer(
         (state, { payload }: PayloadAction<SimplifiedComment>) => {
-          state.comments.push(payload);
+          state.items.push(payload);
         },
       ),
 
-      addToServer: create.asyncThunk(async (comment: SimplifiedComment) => {
-        return commentsApi.createComment(comment);
-      }),
+      addToServer: create.asyncThunk(
+        async (comment: SimplifiedComment) => {
+          return commentsApi.createComment(comment);
+        },
+        {
+          fulfilled: (state, { payload }: PayloadAction<Comment>) => {
+            const filtered = state.items.filter(comment => comment.id);
+
+            state.items = [...filtered, payload];
+          },
+        },
+      ),
 
       delete: create.reducer((state, { payload }: PayloadAction<number>) => {
-        state.comments = state.comments.filter(
-          comment => comment.id !== payload,
-        );
+        state.items = state.items.filter(comment => comment.id !== payload);
       }),
 
       deleteFromServer: create.asyncThunk(async (commentId: number) => {

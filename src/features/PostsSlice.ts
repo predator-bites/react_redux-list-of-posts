@@ -6,13 +6,13 @@ import { Post } from '../types/Post';
 import { authorSlice } from './AuthorSlice';
 
 type PostsSliceType = {
-  posts: Post[];
+  items: Post[];
   loading: boolean;
   error: string;
 };
 
 const initialState: PostsSliceType = {
-  posts: [],
+  items: [],
   loading: false,
   error: '',
 };
@@ -35,7 +35,7 @@ export const postsSlice = customCreateSlice({
             state.error = 'Something went wrong';
           },
           fulfilled: (state, { payload }: PayloadAction<Post[]>) => {
-            state.posts = payload;
+            state.items = payload;
           },
           settled: state => {
             state.loading = false;
@@ -46,7 +46,7 @@ export const postsSlice = customCreateSlice({
   },
   extraReducers(builder) {
     builder.addCase(authorSlice.actions.set, state => {
-      state.posts = [];
+      state.items = [];
     });
   },
 });

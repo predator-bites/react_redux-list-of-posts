@@ -7,14 +7,14 @@ import { authorSlice } from './AuthorSlice';
 
 type PostsSliceType = {
   items: Post[];
-  loading: boolean;
-  error: string;
+  loaded: boolean;
+  hasError: string;
 };
 
 const initialState: PostsSliceType = {
   items: [],
-  loading: false,
-  error: '',
+  loaded: false,
+  hasError: '',
 };
 
 export const postsSlice = customCreateSlice({
@@ -28,17 +28,17 @@ export const postsSlice = customCreateSlice({
         },
         {
           pending: state => {
-            state.loading = true;
-            state.error = '';
+            state.loaded = true;
+            state.hasError = '';
           },
           rejected: state => {
-            state.error = 'Something went wrong';
+            state.hasError = 'Something went wrong';
           },
           fulfilled: (state, { payload }: PayloadAction<Post[]>) => {
             state.items = payload;
           },
           settled: state => {
-            state.loading = false;
+            state.loaded = false;
           },
         },
       ),

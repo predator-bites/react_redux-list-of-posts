@@ -19,9 +19,11 @@ import { selectedPostSlice } from './features/SelectedPost';
 
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.author.user);
-  const posts = useAppSelector(state => state.posts.items);
-  const hasError = useAppSelector(state => state.posts.error);
-  const loading = useAppSelector(state => state.posts.loading);
+  const {
+    items: posts,
+    hasError,
+    loaded,
+  } = useAppSelector(state => state.posts);
   const selectedPost = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
@@ -64,9 +66,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && loading && <Loader />}
+                {author && loaded && <Loader />}
 
-                {author && !loading && hasError && (
+                {author && !loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -75,13 +77,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !hasError && posts.length === 0 && (
+                {author && !loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !hasError && posts.length > 0 && (
+                {author && !loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}

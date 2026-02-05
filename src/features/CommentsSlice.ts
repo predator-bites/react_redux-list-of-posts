@@ -11,13 +11,13 @@ export type SimplifiedComment = Optional<Comment, 'id'>;
 
 type CommentsState = {
   items: SimplifiedComment[];
-  loading: boolean;
+  loaded: boolean;
   hasError: string;
 };
 
 const initialState: CommentsState = {
   items: [],
-  loading: false,
+  loaded: false,
   hasError: '',
 };
 
@@ -32,7 +32,7 @@ export const commentsSlice = customCreateSlice({
         },
         {
           pending: state => {
-            state.loading = true;
+            state.loaded = true;
             state.hasError = '';
           },
           rejected: state => {
@@ -42,7 +42,7 @@ export const commentsSlice = customCreateSlice({
             state.items = payload;
           },
           settled: state => {
-            state.loading = false;
+            state.loaded = false;
           },
         },
       ),
@@ -59,9 +59,11 @@ export const commentsSlice = customCreateSlice({
         },
         {
           fulfilled: (state, { payload }: PayloadAction<Comment>) => {
-            const filtered = state.items.filter(comment => comment.id);
+            const idx = state.items.findIndex(comment => !comment.id);
 
-            state.items = [...filtered, payload];
+            if (idx) {
+              state.items[idx] = payload;
+            }
           },
         },
       ),
